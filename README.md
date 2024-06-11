@@ -1,4 +1,4 @@
-# scale_realtime
+# timbangan-digital
 
 A new Flutter project.
 
