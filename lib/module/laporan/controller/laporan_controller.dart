@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:scale_realtime/util/custom_alert.dart';
 import 'package:scale_realtime/util/save_file_helper.dart';
 
 import 'package:excel/excel.dart' as x;
@@ -250,8 +251,13 @@ class LaporanController extends State<LaporanView> {
       i++;
     }
 
-    FileStorage.writeCounter(
+    await FileStorage.writeCounter(
         excel.encode()!, "hasil_timbangan_$namaPengawas.xlsx");
+
+    Alert.succes(
+        message:
+            "File berhasil diexport pada dir Download/hasil_timbangan_$namaPengawas.xlsx",
+        title: "Succes");
   }
 
   @override
