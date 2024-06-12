@@ -54,8 +54,10 @@ class LoginController extends State<LoginView> {
           } else {
             String role = value.first['role'] == 0 ? "admin" : "pengawas";
             int idUser = value.first['id_user'];
+            String nama = value.first['nama'];
             DataSharedPreferences().saveString("role", role);
             DataSharedPreferences().saveInt("idUser", idUser);
+            DataSharedPreferences().saveString("nama", nama);
 
             getx.Get.offAll(const DashboardView());
           }

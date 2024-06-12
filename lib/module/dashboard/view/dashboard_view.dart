@@ -28,7 +28,7 @@ class DashboardView extends StatefulWidget {
         centerTitle: true,
         foregroundColor: Colors.black,
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,10 +80,23 @@ class DashboardView extends StatefulWidget {
               },
             ),
 
+            const SizedBox(height: 4),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: paddingMain),
-              child: Container(
-                child: TableTimbangan(c: controller),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "History Data Hari Ini",
+                    style: GoogleFonts.poppins(
+                      color: const Color.fromARGB(255, 0, 21, 61),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TableTimbangan(c: controller)
+                ],
               ),
             )
           ],

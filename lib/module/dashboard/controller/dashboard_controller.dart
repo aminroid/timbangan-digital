@@ -47,7 +47,7 @@ class DashboardController extends State<DashboardView> {
   }
 
   void getData() async {
-    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>>? c) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>>? c) async {
       setState(() {
         isOn = true;
       });
@@ -66,10 +66,17 @@ class DashboardController extends State<DashboardView> {
         });
       } else if (currentTopic == totalTopic) {
         var a = Jumlah.fromJson(jsonData);
-        int b = int.parse(dataJumlah) + int.parse(a.data.toString());
-        setState(() {
-          dataJumlah = b.toString();
-          addItem(dataJumlah);
+        int b = int.parse(a.data.toString());
+
+        await Api.create(b).then((value) async {
+          try {
+            print(value);
+            if (value) {
+              refreshData();
+            }
+          } catch (e) {
+            print(e.toString());
+          }
         });
       }
 
@@ -85,8 +92,11 @@ class DashboardController extends State<DashboardView> {
     await Api.list().then((value) async {
       try {
         if (!value.isEmpty) {
+          int totalBerat =
+              value.map((item) => item['berat'] as int).reduce((a, b) => a + b);
           List<DataRow> val = await DataTableHelper.formatData(value);
           setState(() {
+            dataJumlah = totalBerat.toString();
             data = val;
           });
         } else {

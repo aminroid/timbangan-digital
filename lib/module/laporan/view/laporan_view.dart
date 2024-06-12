@@ -139,7 +139,9 @@ class LaporanView extends StatefulWidget {
       ),
       floatingActionButton: controller.data.isNotEmpty
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                controller.exportToExcel();
+              },
               splashColor: biru,
               backgroundColor: const Color(0XFF98D4F6),
               child: const Icon(Icons.print),

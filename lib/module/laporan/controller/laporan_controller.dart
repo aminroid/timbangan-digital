@@ -1,6 +1,13 @@
+import 'dart:io';
+import 'package:scale_realtime/util/save_file_helper.dart';
+
+import 'package:excel/excel.dart' as x;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:scale_realtime/core.dart';
+import 'package:scale_realtime/util/data_shared_helper.dart';
 import '../view/laporan_view.dart';
 
 class LaporanController extends State<LaporanView> {
@@ -12,6 +19,8 @@ class LaporanController extends State<LaporanView> {
   DateTime? selectedTanggalAkhir;
 
   List<DataRow> data = [];
+  List<dynamic> dataPrint = [];
+  String namaPengawas = "";
 
   bool isLoading = false;
 
@@ -22,8 +31,13 @@ class LaporanController extends State<LaporanView> {
     WidgetsBinding.instance.addPostFrameCallback((_) => onReady());
   }
 
-  void onReady() {
+  void onReady() async {
     tanggalAwal.text = tanggalAkhir.text = "dd-mm-yyyy";
+    String? nama = await DataSharedPreferences().readString("nama");
+
+    setState(() {
+      namaPengawas = nama!;
+    });
   }
 
   @override
@@ -128,6 +142,7 @@ class LaporanController extends State<LaporanView> {
         if (!value.isEmpty) {
           List<DataRow> val = await DataTableHelper.formatData(value);
           setState(() {
+            dataPrint = value;
             data = val;
           });
         } else {
@@ -145,6 +160,98 @@ class LaporanController extends State<LaporanView> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  // Future<void> exportToExcel() async {
+  //   // Create a new Excel document.
+  //   final directory = await getApplicationSupportDirectory();
+  //   String filePath = '${directory.path}/CreateExcel.xlsx';
+
+  //   final Workbook workbook = new Workbook();
+  //   //Accessing worksheet via index.
+  //   workbook.worksheets[0];
+  //   // Save the document.
+  //   final List<int> bytes = workbook.saveAsStream();
+  //   FileStorage.writeCounter(bytes, "CreateExcel.xlsx");
+  //   // File(filePath).writeAsBytes(bytes);
+  //   // print("succes");
+  //   // print(filePath);
+  //   //Dispose the workbook.
+
+  //   workbook.dispose();
+  // }
+
+  Future<void> exportToExcel() async {
+    x.Excel excel = x.Excel.createExcel();
+
+    final border = x.Border(
+        borderColorHex: x.ExcelColor.black, borderStyle: x.BorderStyle.Thin);
+
+    var a1 = x.CellIndex.indexByString("A1");
+    var b1 = x.CellIndex.indexByString("B1");
+    excel.updateCell("Sheet1", a1, const x.TextCellValue("Pengawas :"));
+    excel.updateCell("Sheet1", b1, x.TextCellValue(namaPengawas));
+
+    var a2 = x.CellIndex.indexByString("A2");
+    var b2 = x.CellIndex.indexByString("B2");
+    excel.updateCell("Sheet1", a2, const x.TextCellValue(""));
+    excel.updateCell("Sheet1", b2, const x.TextCellValue(""));
+
+    var a3 = x.CellIndex.indexByString("A3");
+    var b3 = x.CellIndex.indexByString("B3");
+    excel.updateCell(
+      "Sheet1",
+      a3,
+      const x.TextCellValue("Tanggal"),
+      cellStyle: x.CellStyle()
+        ..topBorder = border
+        ..bottomBorder = border
+        ..leftBorder = border
+        ..rightBorder = border,
+    );
+    excel.updateCell(
+      "Sheet1",
+      b3,
+      const x.TextCellValue("Berat (gram)"),
+      cellStyle: x.CellStyle()
+        ..topBorder = border
+        ..bottomBorder = border
+        ..leftBorder = border
+        ..rightBorder = border,
+    );
+
+    // Menambahkan data
+    int i = 3;
+    for (var item in dataPrint) {
+      final cell1 = x.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i);
+      final cell2 = x.CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i);
+
+      excel.updateCell(
+        "Sheet1",
+        cell1,
+        x.TextCellValue(item['tanggal']),
+        cellStyle: x.CellStyle()
+          ..topBorder = border
+          ..bottomBorder = border
+          ..leftBorder = border
+          ..rightBorder = border,
+      );
+      excel.updateCell(
+        "Sheet1",
+        cell2,
+        x.IntCellValue(item['berat']),
+        cellStyle: x.CellStyle()
+          ..topBorder = border
+          ..bottomBorder = border
+          ..leftBorder = border
+          ..rightBorder = border,
+      );
+
+      i++;
+    }
+
+    FileStorage.writeCounter(
+        excel.encode()!, "hasil_timbangan_$namaPengawas.xlsx");
   }
 
   @override
