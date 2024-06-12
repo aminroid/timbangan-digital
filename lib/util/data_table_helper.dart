@@ -10,22 +10,21 @@ class DataTableHelper {
     return (formattedDate);
   }
 
-  static Future<List<DataRow>> formatData(
-      List<Map<String, dynamic>> value) async {
+  static Future<List<DataRow>> formatData(List<dynamic> value) async {
     List<dynamic>? jsonData;
 
     var dapat = jsonEncode(value);
     jsonData = jsonDecode(dapat);
 
-    jsonData?.sort((a, b) => b['date'].compareTo(a['date']));
+    jsonData?.sort((a, b) => b['tanggal'].compareTo(a['tanggal']));
 
     List<DataRow> dataRows = [];
     bool rowPertama = true;
     int no = 1;
     if (jsonData != null) {
       for (var item in jsonData) {
-        String date = item['date'];
-        String nilai = item['weight'];
+        String date = item['tanggal'];
+        String nilai = item['berat'].toString();
 
         dataRows.add(DataRow(
           color: rowPertama

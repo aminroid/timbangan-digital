@@ -40,10 +40,8 @@ class LoginView extends StatefulWidget {
                 ),
                 Text(
                   "Login kedalam sistem monitoring timbangan digital",
-                  style: GoogleFonts.poppins(
-                    color: hitam,
-                    fontSize: 14,
-                  ),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(color: hitam, fontSize: 14),
                 ),
                 const SizedBox(
                   height: 32.0,
@@ -124,7 +122,7 @@ class LoginView extends StatefulWidget {
                             controller.onPressedAction();
                           }),
                 const SizedBox(
-                  height: 200,
+                  height: 100,
                 ),
               ],
             ),

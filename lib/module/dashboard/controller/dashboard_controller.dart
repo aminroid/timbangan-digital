@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:scale_realtime/core.dart';
 import 'package:scale_realtime/models/mqtt/jumlah/jumlah.dart';
 import 'package:scale_realtime/services/service_mqtt.dart';
+import 'package:scale_realtime/util/custom_alert.dart';
+import 'package:scale_realtime/util/data_shared_helper.dart';
 import 'package:scale_realtime/util/data_table_helper.dart';
 import 'package:scale_realtime/util/db_helper.dart';
 import '../view/dashboard_view.dart';
@@ -76,12 +79,29 @@ class DashboardController extends State<DashboardView> {
   }
 
   void refreshData() async {
-    final dataDB = await DBHelper.getItems();
-    print(dataDB);
-    List<DataRow> value = await DataTableHelper.formatData(dataDB);
-
     setState(() {
-      data = value;
+      isLoading = true;
+    });
+    await Api.list().then((value) async {
+      try {
+        if (!value.isEmpty) {
+          List<DataRow> val = await DataTableHelper.formatData(value);
+          setState(() {
+            data = val;
+          });
+        } else {
+          setState(() {
+            data = [];
+          });
+        }
+      } catch (e) {
+        setState(() {
+          data = [];
+        });
+        print(e.toString());
+      }
+    });
+    setState(() {
       isLoading = false;
     });
   }

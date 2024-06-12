@@ -26,65 +26,7 @@ class LaporanView extends StatefulWidget {
         centerTitle: true,
         foregroundColor: Colors.black,
       ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  colors: [
-                    biruHalus,
-                    biru,
-                  ],
-                  center: const Alignment(0.0, 0.0),
-                  radius: 1,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "lib/assets/logo.png",
-                    width: 65,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    "Timbangan Digital",
-                    style: GoogleFonts.inter(
-                        color: Colors.white, decoration: TextDecoration.none),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home_rounded),
-              title: const Text('Monitoring'),
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                  CupertinoPageRoute(
-                    builder: (context) => const DashboardView(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.file_copy_rounded),
-              title: const Text('Laporan'),
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                  CupertinoPageRoute(
-                    builder: (context) => const LaporanView(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const MenuDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -153,7 +95,9 @@ class LaporanView extends StatefulWidget {
                   Expanded(
                     child: TextField(
                       controller: controller.tanggalAkhir,
-                      onTap: () => controller.pickDateAkhir(),
+                      onTap: () => controller.selectedTanggalAwal != null
+                          ? controller.pickDateAkhir()
+                          : (),
                       autocorrect: false,
                       readOnly: true,
                       autofocus: false,
@@ -165,8 +109,6 @@ class LaporanView extends StatefulWidget {
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         filled: true,
                         fillColor: Colors.white,
-                        counterText: '',
-                        labelText: 'dd-mm-yyyy',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                           borderSide: BorderSide(color: Colors.white, width: 0),
@@ -195,12 +137,14 @@ class LaporanView extends StatefulWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        splashColor: Color.fromARGB(255, 180, 249, 195),
-        backgroundColor: const Color(0xFF88EB9E),
-        child: Icon(Icons.print),
-      ),
+      floatingActionButton: controller.data.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () {},
+              splashColor: biru,
+              backgroundColor: const Color(0XFF98D4F6),
+              child: const Icon(Icons.print),
+            )
+          : null,
     );
   }
 

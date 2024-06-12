@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+const baseUrl = "http://192.168.43.130:8080/flutter_api";
 const mqttBrokerUrl = "broker.emqx.io";
+
+const connectTimeout = 60000;
+const receiveTimeout = 30000;
 
 double paddingMain = 20;
 

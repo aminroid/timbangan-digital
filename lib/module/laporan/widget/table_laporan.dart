@@ -1,6 +1,5 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:scale_realtime/core.dart';
 import 'package:lottie/lottie.dart';
 
@@ -16,7 +15,26 @@ class TableLaporan extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (c.data.isEmpty)
+        if (c.isLoading)
+          Container(
+            height: 350,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(color: Color(0xFF63B0DF)),
+            ),
+          )
+        else if (c.data.isEmpty)
           Container(
             height: 350,
             padding: const EdgeInsets.all(10),

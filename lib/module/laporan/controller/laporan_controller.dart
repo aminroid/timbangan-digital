@@ -13,6 +13,8 @@ class LaporanController extends State<LaporanView> {
 
   List<DataRow> data = [];
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +38,7 @@ class LaporanController extends State<LaporanView> {
       selectedTanggalAwal = newDate;
       tanggalAwal.text = dateStr;
       selectedTanggalAkhir = null;
-      tanggalAkhir.text = '';
+      tanggalAkhir.text = 'dd-mm-yyyy';
     });
   }
 
@@ -60,7 +62,7 @@ class LaporanController extends State<LaporanView> {
             datePickerTheme: DatePickerThemeData(
               headerBackgroundColor: biru,
               headerForegroundColor: Colors.white,
-              backgroundColor: Color(0xFFE6F3FD),
+              backgroundColor: const Color(0xFFE6F3FD),
             ),
             dividerTheme: const DividerThemeData(
               color: Colors.transparent,
@@ -68,7 +70,8 @@ class LaporanController extends State<LaporanView> {
             primaryColor: biru,
             secondaryHeaderColor: biru,
             colorScheme: ColorScheme.light(primary: biru),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
@@ -83,7 +86,7 @@ class LaporanController extends State<LaporanView> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedTanggalAwal != null
-          ? selectedTanggalAwal
+          ? selectedTanggalAkhir ?? selectedTanggalAwal
           : selectedTanggalAkhir ?? DateTime.now(),
       firstDate: selectedTanggalAwal ?? DateTime(2000),
       lastDate: DateTime(2101),
@@ -93,7 +96,7 @@ class LaporanController extends State<LaporanView> {
             datePickerTheme: DatePickerThemeData(
               headerBackgroundColor: biru,
               headerForegroundColor: Colors.white,
-              backgroundColor: Color(0xFFE6F3FD),
+              backgroundColor: const Color(0xFFE6F3FD),
             ),
             dividerTheme: const DividerThemeData(
               color: Colors.transparent,
@@ -101,7 +104,8 @@ class LaporanController extends State<LaporanView> {
             primaryColor: biru,
             secondaryHeaderColor: biru,
             colorScheme: ColorScheme.light(primary: biru),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
@@ -109,7 +113,38 @@ class LaporanController extends State<LaporanView> {
     );
     if (picked != null && picked != selectedTanggalAkhir) {
       ubahTanggalAkhir(picked);
+      refreshData();
     }
+  }
+
+  void refreshData() async {
+    setState(() {
+      isLoading = true;
+    });
+    await Api.laporan(
+            selectedTanggalAwal.toString(), selectedTanggalAkhir.toString())
+        .then((value) async {
+      try {
+        if (!value.isEmpty) {
+          List<DataRow> val = await DataTableHelper.formatData(value);
+          setState(() {
+            data = val;
+          });
+        } else {
+          setState(() {
+            data = [];
+          });
+        }
+      } catch (e) {
+        setState(() {
+          data = [];
+        });
+        print(e.toString());
+      }
+    });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override

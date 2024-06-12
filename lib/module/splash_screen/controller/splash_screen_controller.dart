@@ -9,14 +9,6 @@ class SplashScreenController extends State<SplashScreenView> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: biru,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: biru,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ));
     Future.delayed(const Duration(seconds: 1)).then((value) {
       getx.Get.offAll(const LoginView());
     });
@@ -26,12 +18,6 @@ class SplashScreenController extends State<SplashScreenView> {
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: putih,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
     super.dispose();
   }
 
