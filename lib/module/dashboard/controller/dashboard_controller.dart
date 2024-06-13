@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:scale_realtime/core.dart';
 import 'package:scale_realtime/models/mqtt/jumlah/jumlah.dart';
-import 'package:scale_realtime/services/service_mqtt.dart';
-import 'package:scale_realtime/util/custom_alert.dart';
-import 'package:scale_realtime/util/data_shared_helper.dart';
-import 'package:scale_realtime/util/data_table_helper.dart';
-import 'package:scale_realtime/util/db_helper.dart';
-import '../view/dashboard_view.dart';
 
 class DashboardController extends State<DashboardView> {
   static late DashboardController instance;
@@ -114,11 +108,6 @@ class DashboardController extends State<DashboardView> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future<void> addItem(String value) async {
-    await DBHelper.createItem(value);
-    refreshData();
   }
 
   void saveData() {}

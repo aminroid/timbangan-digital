@@ -1,11 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scale_realtime/core.dart';
-import 'package:scale_realtime/module/dashboard/widget/table_timbangan.dart';
-import 'package:scale_realtime/util/drawer.dart';
-import '../controller/dashboard_controller.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({Key? key}) : super(key: key);

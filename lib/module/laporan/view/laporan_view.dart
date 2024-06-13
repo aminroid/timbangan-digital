@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scale_realtime/core.dart';
-import 'package:scale_realtime/module/laporan/widget/table_laporan.dart';
-import '../controller/laporan_controller.dart';
 
 class LaporanView extends StatefulWidget {
   const LaporanView({Key? key}) : super(key: key);
@@ -14,7 +11,7 @@ class LaporanView extends StatefulWidget {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          "Monitoring",
+          "Laporan",
           style: GoogleFonts.poppins(
             color: hitam,
             fontSize: 14,

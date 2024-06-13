@@ -2,9 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scale_realtime/core.dart';
 import 'package:get/get.dart' as getx;
-import 'package:scale_realtime/util/custom_alert.dart';
-import 'package:scale_realtime/util/data_shared_helper.dart';
-import '../view/login_view.dart';
 
 class LoginController extends State<LoginView> {
   static late LoginController instance;

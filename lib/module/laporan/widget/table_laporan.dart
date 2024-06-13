@@ -58,7 +58,7 @@ class TableLaporan extends StatelessWidget {
                     width: 180,
                     height: 180,
                   ),
-                  Text("Data tidak ditemukan."),
+                  const Text("Data tidak ditemukan."),
                 ],
               ),
             ),

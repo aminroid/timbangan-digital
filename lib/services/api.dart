@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:scale_realtime/core.dart';
 import 'package:scale_realtime/models/api_model.dart';
-import 'package:scale_realtime/util/data_shared_helper.dart';
 
 class Api {
   static Future<dynamic> login(String username, String password) async {
