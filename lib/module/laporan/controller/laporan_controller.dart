@@ -13,9 +13,15 @@ class LaporanController extends State<LaporanView> {
 
   List<DataRow> data = [];
   List<dynamic> dataPrint = [];
-  String namaPengawas = "";
+
+  Map<String, List<Map<String, dynamic>>> groupedData = {};
+  String? namaPengawas;
+  String? namaTimbangan;
+  bool showHint = true;
 
   bool isLoading = false;
+
+  List<String> items = [];
 
   @override
   void initState() {
@@ -26,11 +32,6 @@ class LaporanController extends State<LaporanView> {
 
   void onReady() async {
     tanggalAwal.text = tanggalAkhir.text = "dd-mm-yyyy";
-    String? nama = await DataSharedPreferences().readString("nama");
-
-    setState(() {
-      namaPengawas = nama!;
-    });
   }
 
   @override
@@ -46,6 +47,10 @@ class LaporanController extends State<LaporanView> {
       tanggalAwal.text = dateStr;
       selectedTanggalAkhir = null;
       tanggalAkhir.text = 'dd-mm-yyyy';
+      tanggalAkhir.text = 'dd-mm-yyyy';
+      namaPengawas = null;
+      items = [];
+      groupedData = {};
     });
   }
 
@@ -54,6 +59,9 @@ class LaporanController extends State<LaporanView> {
     setState(() {
       selectedTanggalAkhir = newDate;
       tanggalAkhir.text = dateStr;
+      namaPengawas = null;
+      items = [];
+      groupedData = {};
     });
   }
 
@@ -133,11 +141,7 @@ class LaporanController extends State<LaporanView> {
         .then((value) async {
       try {
         if (!value.isEmpty) {
-          List<DataRow> val = await DataTableHelper.formatData(value);
-          setState(() {
-            dataPrint = value;
-            data = val;
-          });
+          filterData(value);
         } else {
           setState(() {
             data = [];
@@ -155,24 +159,35 @@ class LaporanController extends State<LaporanView> {
     });
   }
 
-  // Future<void> exportToExcel() async {
-  //   // Create a new Excel document.
-  //   final directory = await getApplicationSupportDirectory();
-  //   String filePath = '${directory.path}/CreateExcel.xlsx';
+  void filterData(dynamic newValue) {
+    Set<String> pengawasSet = {};
 
-  //   final Workbook workbook = new Workbook();
-  //   //Accessing worksheet via index.
-  //   workbook.worksheets[0];
-  //   // Save the document.
-  //   final List<int> bytes = workbook.saveAsStream();
-  //   FileStorage.writeCounter(bytes, "CreateExcel.xlsx");
-  //   // File(filePath).writeAsBytes(bytes);
-  //   // print("succes");
-  //   // print(filePath);
-  //   //Dispose the workbook.
+    for (var item in newValue) {
+      String namaPengawas = item['namaPengawas'];
+      pengawasSet.add(namaPengawas);
 
-  //   workbook.dispose();
-  // }
+      if (!groupedData.containsKey(namaPengawas)) {
+        groupedData[namaPengawas] = [];
+      }
+      groupedData[namaPengawas]!.add(item);
+    }
+
+    setState(() {
+      items = pengawasSet.toList();
+    });
+  }
+
+  void changeNamaPengawas(String newValue) async {
+    List<DataRow> val =
+        await DataTableHelper.formatData(groupedData[newValue]!);
+
+    setState(() {
+      namaPengawas = newValue;
+      namaTimbangan = groupedData[newValue]!.first["namaTimbangan"];
+      dataPrint = groupedData[newValue]!;
+      data = val;
+    });
+  }
 
   Future<void> exportToExcel() async {
     x.Excel excel = x.Excel.createExcel();
@@ -182,19 +197,24 @@ class LaporanController extends State<LaporanView> {
 
     var a1 = x.CellIndex.indexByString("A1");
     var b1 = x.CellIndex.indexByString("B1");
-    excel.updateCell("Sheet1", a1, const x.TextCellValue("Pengawas :"));
-    excel.updateCell("Sheet1", b1, x.TextCellValue(namaPengawas));
+    excel.updateCell("Sheet1", a1, const x.TextCellValue("Timbangan :"));
+    excel.updateCell("Sheet1", b1, x.TextCellValue(namaTimbangan!));
 
     var a2 = x.CellIndex.indexByString("A2");
     var b2 = x.CellIndex.indexByString("B2");
-    excel.updateCell("Sheet1", a2, const x.TextCellValue(""));
-    excel.updateCell("Sheet1", b2, const x.TextCellValue(""));
+    excel.updateCell("Sheet1", a2, const x.TextCellValue("Pengawas :"));
+    excel.updateCell("Sheet1", b2, x.TextCellValue(namaPengawas!));
 
     var a3 = x.CellIndex.indexByString("A3");
     var b3 = x.CellIndex.indexByString("B3");
+    excel.updateCell("Sheet1", a3, const x.TextCellValue(""));
+    excel.updateCell("Sheet1", b3, const x.TextCellValue(""));
+
+    var a4 = x.CellIndex.indexByString("A4");
+    var b4 = x.CellIndex.indexByString("B4");
     excel.updateCell(
       "Sheet1",
-      a3,
+      a4,
       const x.TextCellValue("Tanggal"),
       cellStyle: x.CellStyle()
         ..topBorder = border
@@ -204,7 +224,7 @@ class LaporanController extends State<LaporanView> {
     );
     excel.updateCell(
       "Sheet1",
-      b3,
+      b4,
       const x.TextCellValue("Berat (gram)"),
       cellStyle: x.CellStyle()
         ..topBorder = border
@@ -214,7 +234,7 @@ class LaporanController extends State<LaporanView> {
     );
 
     // Menambahkan data
-    int i = 3;
+    int i = 4;
     for (var item in dataPrint) {
       final cell1 = x.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i);
       final cell2 = x.CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i);

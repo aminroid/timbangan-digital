@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:scale_realtime/core.dart';
-import 'package:scale_realtime/models/mqtt/jumlah/jumlah.dart';
+import 'package:scale_realtime/models/mqtt_model.dart';
 
 class DashboardController extends State<DashboardView> {
   static late DashboardController instance;
@@ -49,20 +50,19 @@ class DashboardController extends State<DashboardView> {
       String currentTopic = c[0].topic;
       String payload =
           MqttPublishPayload.bytesToStringAsString(message.payload.message);
-      Map<String, dynamic> jsonData = {"data": payload};
 
-      print(currentTopic);
+      Map<String, dynamic> jsonData = jsonDecode(payload);
 
       if (currentTopic == realtimeTopic) {
-        var a = Jumlah.fromJson(jsonData);
+        var a = MQTTModel.fromJson(jsonData);
         setState(() {
-          dataRealtime = a.data.toString();
+          dataRealtime = a.berat.toString();
         });
       } else if (currentTopic == totalTopic) {
-        var a = Jumlah.fromJson(jsonData);
-        int b = int.parse(a.data.toString());
+        var a = MQTTModel.fromJson(jsonData);
+        int b = int.parse(a.berat.toString());
 
-        await Api.create(b).then((value) async {
+        await Api.create(b, a.id).then((value) async {
           try {
             print(value);
             if (value) {

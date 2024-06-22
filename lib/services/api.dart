@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:scale_realtime/core.dart';
 import 'package:scale_realtime/models/api_model.dart';
@@ -70,6 +72,22 @@ class Api {
 
   static Future<dynamic> laporan(
       String tanggalAwal, String tanggalAkhir) async {
+  //   String jsonString = '''
+  // {
+  //   "result": [
+  //     {"tanggal": "2024-06-21 00:00:00", "berat": 234, "namaPengawas": "Andi", "namaTimbangan": "Timbangan 1"},
+  //     {"tanggal": "2024-06-21 00:00:00", "berat": 54, "namaPengawas": "Andi", "namaTimbangan": "Timbangan 1"},
+  //     {"tanggal": "2024-06-21 00:00:00", "berat": 99, "namaPengawas": "Budi", "namaTimbangan": "Timbangan 2"}
+  //   ]
+  // }
+  // ''';
+
+  //   Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+  //   var data = ResultModel.fromJson(jsonData);
+
+  //   return data.result;
+
     String url = "$baseUrl/laporan.php";
     BaseOptions options = BaseOptions(
       baseUrl: url,
@@ -104,9 +122,7 @@ class Api {
     }
   }
 
-  static Future<dynamic> create(int berat) async {
-    int? idUser = await DataSharedPreferences().readInt("idUser");
-
+  static Future<dynamic> create(int berat, int idUser) async {
     String url = "$baseUrl/create.php";
     BaseOptions options = BaseOptions(
       baseUrl: url,

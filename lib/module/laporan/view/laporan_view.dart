@@ -129,6 +129,64 @@ class LaporanView extends StatefulWidget {
               const SizedBox(
                 height: 20.0,
               ),
+              Row(
+                children: [
+                  Text(
+                    "Pengawas       ",
+                    style: GoogleFonts.poppins(
+                      color: const Color.fromARGB(255, 0, 21, 61),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                        child: DropdownButton(
+                          value: controller.namaPengawas,
+                          borderRadius: BorderRadius.circular(16),
+                          iconEnabledColor: Colors.black,
+                          hint: const Text(
+                            "nama pengawas",
+                            style: TextStyle(
+                                color: Color(0xFF1C1B1F),
+                                fontWeight: FontWeight.w400),
+                          ),
+                          dropdownColor: Colors.white,
+                          focusColor: Colors.white,
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            bottom: 20,
+                            right: 4,
+                          ),
+                          underline: const SizedBox(),
+                          isDense: true,
+                          isExpanded: true,
+                          onChanged: (String? value) {
+                            controller.changeNamaPengawas(value!);
+                          },
+                          items: controller.items
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
               TableLaporan(c: controller)
             ],
           ),

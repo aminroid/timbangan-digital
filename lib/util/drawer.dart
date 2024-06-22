@@ -20,7 +20,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
   bool isAdmin = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setAdmin();
   }
